@@ -13,9 +13,16 @@ class MainFrame : public wxFrame
 
 public:
 	MainFrame(const wxString &title, const wxPoint &pos, const wxSize &size);
+	wxButton *testbutton;
+	void OnExit( wxCommandEvent& event);
+
+	DECLARE_EVENT_TABLE()
 
 };
 
-DECLARE_APP(MainApp);
+enum
+{
+	button_testbutton = wxID_HIGHEST+1
+};
 
 #endif

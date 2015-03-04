@@ -13,9 +13,17 @@ bool MainApp::OnInit()
 	MainWin->Show(true); // show the window 
 	SetTopWindow(MainWin); // and finally, set it as the main window 
 	return true;
-} 
+}
+
+BEGIN_EVENT_TABLE(MainFrame, wxFrame)
+	EVT_BUTTON(button_testbutton, MainFrame::OnExit)
+END_EVENT_TABLE()
  
 MainFrame::MainFrame(const wxString& title, const wxPoint& pos, const wxSize& size) : wxFrame((wxFrame *) NULL, -1, title, pos, size) 
 {
-	// normally we would initialize objects such as buttons and textboxes here 
+	testbutton = new wxButton(this, button_testbutton, _T("Test Button"), wxDefaultPosition, wxDefaultSize, 0); 
+}
+
+void MainFrame::OnExit(wxCommandEvent& event){
+	Close(TRUE);
 }
