@@ -1,4 +1,4 @@
 FLAGS=`wx-config --cxxflags --libs`
 
 all:
-	g++ main.cc $(FLAGS) -o bobcat
+	g++ base.cc mainframe.cc $(FLAGS) -o bobcat
