@@ -3,7 +3,9 @@
 
 #include <wx/wx.h>
 #include <wx/menu.h>
-#include <wx/grid.h>
+#include <wx/listctrl.h>
+#include <string>
+#include <vector>
 
 #include <dirent.h>
 
@@ -11,10 +13,13 @@ class Frame : public wxFrame
 {
 
 private:
-	std::string *library_location;
+	std::string *library_location = nullptr;
 	
 	//directory listing
-	DIR* dir;	
+	DIR* dir = nullptr;
+	struct dirent* entry = nullptr;
+
+	std::vector<std::string> split_filename(std::string filename);
 
 public:
 	void debug_dialog(std::string message){
@@ -27,13 +32,16 @@ public:
 	void OnExit( wxCommandEvent& event);
 
 	//Menubar declarations
-	wxMenuBar *menubar;
-	wxMenu *filemenu;
-	wxMenu *importsubmenu;
+	wxMenuBar *menubar = nullptr;
+	wxMenu *filemenu = nullptr;
+	wxMenu *importsubmenu = nullptr;
 
 	//Toolbar declaratons
-	wxToolBar *toolbar;
-	wxBitmap *play, *pause, *advance_left, *advance_right;
+	wxToolBar *toolbar = nullptr;
+	wxBitmap *play, *pause, *advance_left, *advance_right = nullptr;
+
+	//Table declarations
+	wxListCtrl *file_table = nullptr;
 };
 
 #endif

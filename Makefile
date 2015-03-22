@@ -1,4 +1,6 @@
 FLAGS=`wx-config --cxxflags --libs`
+CC_DEPS=base.cc mainframe.cc
+HH_DEPS=base.hh mainframe.hh
 
-all: base.cc mainframe.cc
-	g++ $^ base.hh mainframe.hh $(FLAGS) -o bobcat
+all: $(CC_DEPS) $(HH_DEPS)
+	g++ -std=c++11 $^ $(FLAGS) -o bobcat
