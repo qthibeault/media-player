@@ -38,7 +38,7 @@ public:
 
 	//Toolbar declaratons
 	wxToolBar *toolbar = nullptr;
-	wxBitmap *play, *pause, *advance_left, *advance_right = nullptr;
+	wxBitmap *play, *pause, *advance_left, *advance_right, *skip, *prev = nullptr;
 
 	//Table declarations
 	wxListCtrl *file_table = nullptr;
