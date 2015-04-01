@@ -15,6 +15,38 @@ std::vector<std::string> Frame::split_filename(std::string filename){
 	return split_filename;
 }
 
+int Frame::populateTable(wxListCtrl *file_table, DIR *dir){
+	if(dir){
+		wxListItem *item = nullptr;
+		for(int i=0;(entry = readdir(dir)) != NULL;){
+			std::string file = entry->d_name;	
+			if(file[0] != '.'){
+				std::vector<std::string> filename = split_filename(file);
+
+				item = new wxListItem();
+				item->SetId(i);
+				item->SetText(entry->d_name);
+								
+				if(filename.size() > 1) {
+					file_table->InsertItem(*item);
+					file_table->SetItem(i,0,filename.at(0));
+					file_table->SetItem(i,1,filename.at(1));
+				}
+				else{
+					file_table->InsertItem(*item);
+					file_table->SetItem(i,0,filename.at(0));
+				}
+				++i;
+			}
+		}
+		delete item;
+		return 0;
+	}
+	else{
+		return -1;
+	}
+}
+
 Frame::Frame(const wxString& title, const wxPoint& pos, const wxSize& size) : wxFrame((wxFrame *) NULL, -1, title, pos, size)
 {	
 	//Menu bar definitions and functions
@@ -45,6 +77,7 @@ Frame::Frame(const wxString& title, const wxPoint& pos, const wxSize& size) : wx
 	advance_right = new wxBitmap(wxT("icons/ffw.png"), wxBITMAP_TYPE_PNG);
 	skip = new wxBitmap(wxT("icons/skip.png"), wxBITMAP_TYPE_PNG);
 	prev = new wxBitmap(wxT("icons/prev.png"), wxBITMAP_TYPE_PNG);
+	
 	toolbar = CreateToolBar();
 	toolbar->AddTool(wxID_ANY, *prev, wxT("Previous Song"));
 	toolbar->AddTool(wxID_ANY, *advance_left, wxT("Rewind"));
@@ -57,9 +90,11 @@ Frame::Frame(const wxString& title, const wxPoint& pos, const wxSize& size) : wx
 
 	//Callback functions
 	Connect(wxID_EXIT, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(Frame::OnExit));
+	Connect(wxID_FILETABLE, wxEVT_LIST_ITEM_SELECTED, wxListEventHandler(Frame::onSelected));
+	
 
 	//Table definitions
-	file_table = new wxListCtrl(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLC_REPORT);
+	file_table = new wxListCtrl(this, wxID_FILETABLE, wxDefaultPosition, wxDefaultSize, wxLC_REPORT);
 	
 	wxListItem file_col, prop_col;
 	file_col.SetId(0);
@@ -74,34 +109,13 @@ Frame::Frame(const wxString& title, const wxPoint& pos, const wxSize& size) : wx
 	
 	//initialize directory reading after window is loaded
 	library_location = new std::string("/home/quinn/Music/Bobcat/Library/");
-	dir = opendir(library_location->c_str());
-	if(dir){
-		wxListItem *item = nullptr;
-		for(int i=0;(entry = readdir(dir)) != NULL;){
-			std::string file = entry->d_name;	
-			if(file[0] != '.'){
-				std::vector<std::string> filename = split_filename(file);
-
-				item = new wxListItem();
-				item->SetId(i);
-				item->SetText(entry->d_name);
-								
-				if(filename.size() > 1) {
-					file_table->InsertItem(*item);
-					file_table->SetItem(i,0,filename.at(0));
-					file_table->SetItem(i,1,filename.at(1));
-				}
-				else{
-					file_table->InsertItem(*item);
-					file_table->SetItem(i,0,filename.at(0));
-				}
-				++i;
-			}
-		}
-		delete item;
-	}
+	populateTable(file_table, opendir(library_location->c_str()));
 }
 
 void Frame::OnExit(wxCommandEvent& event){
 	Close(TRUE);
+}
+
+void Frame::onSelected(wxListEvent& event){
+	debug_dialog(event.GetText().ToStdString());
 }

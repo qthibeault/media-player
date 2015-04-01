@@ -9,6 +9,8 @@
 
 #include <dirent.h>
 
+#define wxID_FILETABLE wxID_HIGHEST+1
+
 class Frame : public wxFrame
 {
 
@@ -42,6 +44,8 @@ public:
 
 	//Table declarations
 	wxListCtrl *file_table = nullptr;
+	int populateTable(wxListCtrl *file_table, DIR* dir);
+	void onSelected(wxListEvent& event);
 };
 
 #endif
