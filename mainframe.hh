@@ -6,8 +6,11 @@
 #include <wx/listctrl.h>
 #include <string>
 #include <vector>
+#include <thread>
 
 #include <dirent.h>
+
+#include "player.hh"
 
 #define wxID_FILETABLE wxID_HIGHEST+1
 #define wxID_PLAY wxID_FILETABLE+1
@@ -24,6 +27,8 @@ private:
 	struct dirent* entry = nullptr;
 
 	std::vector<std::string> split_filename(std::string filename);
+	
+	media_player player;
 
 public:
 	void debug_dialog(std::string message){

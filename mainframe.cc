@@ -111,7 +111,8 @@ void Frame::onSelected(wxListEvent& event){
 
 void Frame::onPlay(wxCommandEvent& event){
 	if(current_song != nullptr){
-		//TODO play song
+		std::thread t(&media_player::play, &player, *library_location + *current_song);
+		t.detach();
 	}
 	else{
 		debug_dialog("No song selected");
