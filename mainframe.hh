@@ -10,12 +10,14 @@
 #include <dirent.h>
 
 #define wxID_FILETABLE wxID_HIGHEST+1
+#define wxID_PLAY wxID_FILETABLE+1
 
 class Frame : public wxFrame
 {
 
 private:
 	std::string *library_location = nullptr;
+	std::string *current_song = nullptr;
 	
 	//directory listing
 	DIR* dir = nullptr;
@@ -41,6 +43,7 @@ public:
 	//Toolbar declaratons
 	wxToolBar *toolbar = nullptr;
 	wxBitmap *play, *pause, *advance_left, *advance_right, *skip, *prev = nullptr;
+	void onPlay(wxCommandEvent &event);
 
 	//Table declarations
 	wxListCtrl *file_table = nullptr;

@@ -21,21 +21,9 @@ int Frame::populateTable(wxListCtrl *file_table, DIR *dir){
 		for(int i=0;(entry = readdir(dir)) != NULL;){
 			std::string file = entry->d_name;	
 			if(file[0] != '.'){
-				std::vector<std::string> filename = split_filename(file);
-
-				item = new wxListItem();
-				item->SetId(i);
-				item->SetText(entry->d_name);
-								
-				if(filename.size() > 1) {
-					file_table->InsertItem(*item);
-					file_table->SetItem(i,0,filename.at(0));
-					file_table->SetItem(i,1,filename.at(1));
-				}
-				else{
-					file_table->InsertItem(*item);
-					file_table->SetItem(i,0,filename.at(0));
-				}
+				std::vector<std::string> filename = split_filename(file);				
+				file_table->InsertItem(i, file);
+				file_table->SetItem(i, 1, filename.at(1));
 				++i;
 			}
 		}
@@ -82,7 +70,7 @@ Frame::Frame(const wxString& title, const wxPoint& pos, const wxSize& size) : wx
 	toolbar->AddTool(wxID_ANY, *prev, wxT("Previous Song"));
 	toolbar->AddTool(wxID_ANY, *advance_left, wxT("Rewind"));
 	toolbar->AddTool(wxID_ANY, *pause, wxT("Pause Media"));
-	toolbar->AddTool(wxID_ANY, *play, wxT("Play Media"));
+	toolbar->AddTool(wxID_PLAY, *play, wxT("Play Media"));
 	toolbar->AddTool(wxID_ANY, *advance_right, wxT("Fast Forward"));
 	toolbar->AddTool(wxID_ANY, *skip, wxT("Next Song"));
 	toolbar->Realize();
@@ -91,6 +79,7 @@ Frame::Frame(const wxString& title, const wxPoint& pos, const wxSize& size) : wx
 	//Callback functions
 	Connect(wxID_EXIT, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(Frame::OnExit));
 	Connect(wxID_FILETABLE, wxEVT_LIST_ITEM_SELECTED, wxListEventHandler(Frame::onSelected));
+	Connect(wxID_PLAY, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(Frame::onPlay));
 	
 
 	//Table definitions
@@ -117,5 +106,14 @@ void Frame::OnExit(wxCommandEvent& event){
 }
 
 void Frame::onSelected(wxListEvent& event){
-	debug_dialog(event.GetText().ToStdString());
+	current_song = new std::string(event.GetLabel().ToStdString());
+}
+
+void Frame::onPlay(wxCommandEvent& event){
+	if(current_song != nullptr){
+		//TODO play song
+	}
+	else{
+		debug_dialog("No song selected");
+	}
 }
